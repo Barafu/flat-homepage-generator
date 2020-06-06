@@ -1,8 +1,7 @@
 {% macro url_button(classes, page_button) %}
-    <div class="{{ classes }} w3-grey" style="width: 15%">
-        <a href="{{ page_button.url }}" class="w3-button w3-teal" >
-            <span class="w3-large">{{ page_button.name }}</span><br>
-            <span class="w3-small">{{ page_button.url }}</span>
+    <div class="{{ classes }} w3-row">
+        <a href="{{ page_button.url }}" class="w3-button w3-teal w3-col w3-tooltip" >
+            <p class="w3-left-align ">{{ page_button.name }}</p>
         </a>
     </div>
 {% endmacro -%}

@@ -4,12 +4,14 @@
     {% for tab in tabs %}
 <div id="{{ tab.id }}" class="w3-container w3-display-container brf-tabspace brf-tabspace-{{ loop.index }}"
      style="{% if not loop.first %}display:none; {% endif %}min-height: 94%;">
-    <div class="w3-row-padding">
-    {% for page_list in tab.pagelists %}
-        {% for page_button in page_list.buttons %}
-            {{ html_buttons.url_button("w3-col w3-green", page_button) | indent(12) }}
-        {% endfor %}
-        {% endfor %}
+    <div class="w3-content">
+    {% for button_row in tab.get_all_buttons()| batch(6) %}
+        <div class="w3-row-padding w3-panel">
+            {% for button in button_row %}
+                {{ html_buttons.url_button("w3-col m2", button) | indent(12) }}
+            {% endfor %}
+        </div>
+    {% endfor %}
     </div>
 
 </div>

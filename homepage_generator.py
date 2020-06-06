@@ -1,3 +1,5 @@
+from typing import List
+
 import jinja2 as j2
 
 import sys
@@ -22,7 +24,7 @@ class PageButton(PageItem):
 
 class PageList(PageItem):
     def __init__(self, data):
-        self.buttons = []
+        self.buttons: List[PageButton] = []
         super().__init__(data)
 
     def add_button(self, button: PageButton):
@@ -32,7 +34,7 @@ class PageList(PageItem):
 
 class PageTab(PageItem):
     def __init__(self, data):
-        self.pagelists = []
+        self.pagelists: List[PageList] = []
         super().__init__(data)
 
     def add_list(self, page_list: PageList):
@@ -46,6 +48,12 @@ class PageTab(PageItem):
         else:
             width = 25 * len(self.pagelists)
             return f"{width}%"
+
+    def get_all_buttons(self):
+        """Return all buttons on the page, regardless of the list. Used in button_grid template"""
+        for page_list in self.pagelists:
+            for button in page_list.buttons:
+                yield button
 
 
 def main(args):
@@ -73,6 +81,14 @@ def parse_config(settings_file_name: str):
         raise FileNotFoundError(f"Settings file {settings_file_name} was not found!")
     config.read(settings_file)
     settings = dict()
+
+    # Parse defaults
+    page = dict(config["Page"])
+    page_style = dict(config["Page Style"])
+    button_style = dict(config["Button Style"])
+
+    for i in ("page", "button_style", "page_style"):
+        settings[i] = locals()[i]
 
     # Parse tabs
     tabs = OrderedDict()
@@ -104,20 +120,14 @@ def parse_config(settings_file_name: str):
             butt_dict = dict(config[c])
             list_id = butt_dict["list"]
             if list_id in temp_lists_reference.keys():
-                butt_obj = PageButton(butt_dict)
+                full_dict = dict(button_style)  # Copy default button settings
+                full_dict.update(butt_dict)  # and override them with this particular, if any
+                butt_obj = PageButton(full_dict)
                 temp_lists_reference[list_id].add_button(butt_obj)
             else:
                 raise SyntaxError(f"No list with id {list_id}")
 
-    # Parse defaults
-    page = dict(config["Page"])
-    page_style = dict(config["Page Style"])
-    button_style = dict(config["Button Style"])
-
-    settings = dict()
     settings["tabs"] = list(tabs.values())
-    for i in ("page", "button_style", "page_style"):
-        settings[i] = locals()[i]
 
     return settings
 
