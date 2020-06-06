@@ -49,13 +49,16 @@ class PageTab(PageItem):
 
 
 def main(args):
+    settings = parse_config("test_config.ini")
+
     jenv = j2.Environment()
     jenv.loader = FileSystemLoader("templates")
     jenv.autoescape = j2.select_autoescape(["html", "xml"])
     jenv.trim_blocks = True
     jenv.lstrip_blocks = True
-    template = jenv.get_template("vertical_list.jinja2")
-    settings = parse_config("test_config.ini")
+    template_name = settings["page"]["template"]
+    template = jenv.get_template(f"{template_name}.jinja2")
+
     # pprint(settings)
     content = template.render(settings)
     with open("generated.html", "w") as f:
@@ -107,12 +110,13 @@ def parse_config(settings_file_name: str):
                 raise SyntaxError(f"No list with id {list_id}")
 
     # Parse defaults
+    page = dict(config["Page"])
     page_style = dict(config["Page Style"])
     button_style = dict(config["Button Style"])
 
     settings = dict()
     settings["tabs"] = list(tabs.values())
-    for i in ("button_style", "page_style"):
+    for i in ("page", "button_style", "page_style"):
         settings[i] = locals()[i]
 
     return settings

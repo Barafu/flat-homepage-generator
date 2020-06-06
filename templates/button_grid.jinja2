@@ -1,0 +1,18 @@
+{%  extends "body.jinja2" %}
+{% import 'buttons.jinja2' as html_buttons %}
+{% block tab_content %}
+    {% for tab in tabs %}
+<div id="{{ tab.id }}" class="w3-container w3-display-container brf-tabspace brf-tabspace-{{ loop.index }}"
+     style="{% if not loop.first %}display:none; {% endif %}min-height: 94%;">
+    <div class="w3-row-padding">
+    {% for page_list in tab.pagelists %}
+        {% for page_button in page_list.buttons %}
+            {{ html_buttons.url_button("w3-col w3-green", page_button) | indent(12) }}
+        {% endfor %}
+        {% endfor %}
+    </div>
+
+</div>
+    {%  endfor %}
+{%  endblock %}
+
