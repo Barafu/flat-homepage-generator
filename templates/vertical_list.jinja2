@@ -1,74 +1,22 @@
+{%  extends "body.jinja2" %}
 {% import 'buttons.jinja2' as html_buttons %}
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <title>Homepage</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <style>
-        html {
-            background-color: hotpink;
-        }
-        html, body {
-            height: 100%;
-            -ms-box-sizing: border-box;
-            -webkit-box-sizing: border-box;
-            -moz-box-sizing: border-box;
-            box-sizing: border-box;
-        }
-        body {
-            margin: 0;
-        }
-        .brf-tab-button {height: 100%}
-        {% for tab in tabs %}
-            .brf-tabspace-{{ loop.index }} {
-                background-color: {{ tab.color }}
-            }
-        {%  endfor %}
-    </style>
-</head>
-
-<body>
-{# Tab header #}
-{% if tabs %}
-    <div class="w3-bar w3-black" style="height: 6%">
-        {% for tab in tabs %}
-            <button class="w3-bar-item w3-button brf-tab-button"  onclick="openTab('{{ tab.id }}')">{{ tab.name }}</button>
+{% block tab_content %}
+    {% for tab in tabs %}
+<div id="{{ tab.id }}" class="w3-container w3-display-container brf-tabspace brf-tabspace-{{ loop.index }}"
+     style="{% if not loop.first %}display:none; {% endif %}min-height: 94%;">
+    <div class="w3-cell-row w3-orange" style="width: {{ tab.width }}; margin: auto" >
+        {# List #}
+        {% for page_list in tab.pagelists %}
+            <div class="w3-container w3-padding w3-cell">
+                <div class="w3-card w3-white w3-padding">
+                    {% for page_button in page_list.buttons %}
+                            {{ html_buttons.url_button("w3-panel w3-green", page_button) | indent(32) }}
+                    {% endfor %}
+                </div>
+            </div>
         {% endfor %}
     </div>
-{% endif %}
+</div>
+    {%  endfor %}
+{%  endblock %}
 
-{#-  Tab space style="width: {{ tab.width }} #}
-{% for tab in tabs %}
-    <div id="{{ tab.id }}" class="w3-container w3-display-container brf-tabspace brf-tabspace-{{ loop.index }}"
-         style="{% if not loop.first %}display:none; {% endif %}min-height: 94%;">
-        <div class="w3-cell-row w3-orange" style="width: {{ tab.width }}; margin: auto" >
-            {# List #}
-            {% for page_list in tab.pagelists %}
-                <div class="w3-container w3-padding w3-cell">
-                    <ul class="w3-ul w3-card-4 w3-white">
-                        {% for page_button in page_list.buttons %}
-                            <li class="w3-bar">
-                                {{ html_buttons.url_button("w3-bar-item", page_button) | indent(32) }}
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% endfor %}
-        </div>
-    </div>
-{% endfor %}
-
-<script>
-    function openTab(tabName) {
-        var i;
-        var x = document.getElementsByClassName("brf-tabspace");
-        for (i = 0; i < x.length; i++) {
-            x[i].style.display = "none";
-        }
-        document.getElementById(tabName).style.display = "block";
-    }
-</script>
-
-</body>
