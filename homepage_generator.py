@@ -6,6 +6,8 @@ from pathlib import Path
 from pprint import pprint
 from collections import OrderedDict
 
+from jinja2 import PackageLoader, FileSystemLoader
+
 
 class PageItem:
     def __init__(self, data: dict):
@@ -48,12 +50,11 @@ class PageTab(PageItem):
 
 def main(args):
     jenv = j2.Environment()
+    jenv.loader = FileSystemLoader("templates")
     jenv.autoescape = j2.select_autoescape(["html", "xml"])
     jenv.trim_blocks = True
     jenv.lstrip_blocks = True
-    with open("templates/vertical_list.jinja2") as f:
-        template_string = f.read()
-    template = jenv.from_string(template_string)
+    template = jenv.get_template("vertical_list.jinja2")
     settings = parse_config("test_config.ini")
     # pprint(settings)
     content = template.render(settings)
