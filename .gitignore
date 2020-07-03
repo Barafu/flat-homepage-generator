@@ -1,6 +1,7 @@
 # --- Project-specific ---
 
 .idea/
+.vscode/
 
 # Do not commit generated pages
 *.html
