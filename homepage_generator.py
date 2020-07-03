@@ -1,6 +1,5 @@
 from typing import List
 
-import jinja2 as j2
 
 import sys
 import configparser
@@ -8,18 +7,33 @@ from pathlib import Path
 from pprint import pprint
 from collections import OrderedDict
 
+import jinja2 as j2
 from jinja2 import PackageLoader, FileSystemLoader
 
 
 class PageItem:
+    max_id = 0  # Counter for incrementig IDs.
+
     def __init__(self, data: dict):
-        for name, value in data.items():
-            setattr(self, name, value)
+        self.data = dict(data)
+        PageItem.max_id += 1
+        self.element_id = PageItem.max_id
         self.parent = None
 
 
 class PageButton(PageItem):
-    pass
+    def build_style(self):
+        """Create a string with CSS style of the button"""
+        css_dict = {
+            "color": "background-color",
+            "text color": "color",
+            "hover color": "",
+        }
+        css_commands = []
+        for local_key, css_key in css_dict.items():
+            css_commands.append(f"{css_key}:{self.data[local_key]}")
+        css_text = ";".join(css_commands) + ";"
+        return css_text
 
 
 class PageList(PageItem):
@@ -121,7 +135,9 @@ def parse_config(settings_file_name: str):
             list_id = butt_dict["list"]
             if list_id in temp_lists_reference.keys():
                 full_dict = dict(button_style)  # Copy default button settings
-                full_dict.update(butt_dict)  # and override them with this particular, if any
+                full_dict.update(
+                    butt_dict
+                )  # and override them with this particular, if any
                 butt_obj = PageButton(full_dict)
                 temp_lists_reference[list_id].add_button(butt_obj)
             else:

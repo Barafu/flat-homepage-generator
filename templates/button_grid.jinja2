@@ -2,7 +2,7 @@
 {% import 'buttons.jinja2' as html_buttons %}
 {% block tab_content %}
     {% for tab in tabs %}
-<div id="{{ tab.id }}" class="w3-container w3-display-container brf-tabspace brf-tabspace-{{ loop.index }}"
+<div id="{{ tab.data.id }}" class="w3-container w3-display-container brf-tabspace brf-tabspace-{{ loop.index }}"
      style="{% if not loop.first %}display:none; {% endif %}min-height: 94%;">
     <div class="w3-content">
     {% for button_row in tab.get_all_buttons()| batch(6) %}

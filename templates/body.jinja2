@@ -21,7 +21,7 @@
         }
         {% for tab in tabs %}
             .brf-tabspace-{{ loop.index }} {
-                background-color: {{ tab.color }}
+                background-color: {{ tab.data.color }}
             }
         {%  endfor %}
     </style>
@@ -32,7 +32,8 @@
 {% if tabs %}
     <div class="w3-bar w3-black" style="height: 6%">
         {% for tab in tabs %}
-            <button class="w3-bar-item w3-button brf-tab-button"  onclick="openTab('{{ tab.id }}')">{{ tab.name }}</button>
+            <button class="w3-bar-item w3-button brf-tab-button"
+                    onclick="openTab('{{ tab.data.id }}')">{{ tab.data.name }}</button>
         {% endfor %}
     </div>
 {% endif %}
